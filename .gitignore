@@ -1,0 +1,4 @@
+*.nupkg
+.local/
+.objects/
+output/

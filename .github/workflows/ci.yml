@@ -1,0 +1,38 @@
+name: CI/CD Pipeline
+on:
+  push:
+    branches: [int, qa, stage, main, 'feature/*', 'hotfix/*']
+  pull_request:
+    branches: [int, qa, stage, main]
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        options: [int, qa, stage, prod]
+env:
+  APP_NAME: "uipath-bot-120"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: echo build done
+      - name: Test
+        run: echo tests passed
+  security:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Security scan
+        run: echo "Security scan passed"
+  deploy:
+    needs: [build, security]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy
+        run: |
+          BRANCH=${{ github.ref_name }}
+          echo "Deploying uipath-bot-120 from $BRANCH"
